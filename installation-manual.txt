@@ -1,0 +1,30 @@
+Struts2CmisExplorer
+Installation Manual
+
+
+=== I. Installation Procedure ===
+
+1) Install "Eclipse for JEE developers". The classic version of Eclipse will not work.
+
+2) Download Struts2CmisExplorer, and uncompress it if it is a compressed file.
+
+3) Open Eclipse, click "File > Import > General > Existing Projects into Workspace", select the folder where you uncompressed the project, and finish importing the project.
+
+4) On Eclipse's left pane (Project Explorer), check that a new project called "Struts2CmisExplorer" has appeared.
+
+5) In the Struts2CmisExplorer project, open "src > jp.aegif.struts2cmisexplorer.opencmisbinding > OpenCMISRepositoryClientFacade.java
+
+6) In this Java file, set the value of CMIS_ATOMPUB_URL, replacing it with the URL to your CMIS server.
+
+7) In the left pane, right-click on the "Struts2CmisExplorer" project and select "Run as > Run on server".
+
+8) Tomcat should have started with the Struts2CmisExplorer web application.
+
+9) Access the web application at http://localhost:8080/Struts2CmisExplorer
+
+
+=== II. Notes ===
+
+1) For deployment outside of Eclipse, a WAR file is necessary. In the left pane, right-click on the "Struts2CmisExplorer" project and select "Export > WAR file". This WAR file can then be deployed in the "webapps" directory of a Tomcat 6 installation.
+
+2) The number of results shown in a single page (pagination) can be configured by modifying MAX_ITEMS_PER_PAGE in OpenCMISRepositoryClientFacade.java
