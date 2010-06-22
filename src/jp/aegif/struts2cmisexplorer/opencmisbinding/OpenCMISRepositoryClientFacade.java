@@ -193,7 +193,6 @@ public class OpenCMISRepositoryClientFacade implements RepositoryClientFacade {
 	@Override
 	public boolean testConnection() {
 		// TODO Implement this method.
-		// Because authentication will be thrown away, implementation is probably not really necessary.
 		return true;
 	}
 	
