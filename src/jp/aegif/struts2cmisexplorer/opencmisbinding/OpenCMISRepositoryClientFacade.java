@@ -1,18 +1,18 @@
 /***************************************************************************************
-* Copyright (c) 2010 Aegif  - http://aegif.jp                                          *
-*                                                                                      *
-* This program is free software; you can redistribute it and/or modify it under        *
-* the terms of the GNU General Public License as published by the Free Software        *
-* Foundation; either version 3 of the License, or (at your option) any later           *
-* version.                                                                             *
-*                                                                                      *
-* This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
-* WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
-* PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
-*                                                                                      *
-* You should have received a copy of the GNU General Public License along with         *
-* this program.  If not, see <http://www.gnu.org/licenses/>.                           *
-****************************************************************************************/
+ * Copyright (c) 2010 Aegif  - http://aegif.jp                                          *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 3 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 package jp.aegif.struts2cmisexplorer.opencmisbinding;
 
 import java.util.ArrayList;
@@ -49,45 +49,46 @@ import org.apache.chemistry.opencmis.commons.exceptions.CmisRuntimeException;
  */
 public class OpenCMISRepositoryClientFacade implements RepositoryClientFacade {
 
-	/////////////////////////////////////////////////////////
-	///////////////// CONFIGURATION : BEGIN /////////////////
-	/////////////////////////////////////////////////////////
-	
+	// ///////////////////////////////////////////////////////
+	// /////////////// CONFIGURATION : BEGIN /////////////////
+	// ///////////////////////////////////////////////////////
+
 	/**
 	 * URL of the CMIS repository.
 	 */
 	protected final static String CMIS_ATOMPUB_URL = "http://localhost:8080/alfresco/service/cmis";
 
 	/**
-	 * Number of results displayed by page (pagination).
-	 * Any positive value is fine.
+	 * Number of results displayed by page (pagination). Any positive value is
+	 * fine.
 	 */
 	private final static int MAX_ITEMS_PER_PAGE = 5;
-	
-	/////////////////////////////////////////////////////////
-	////////////////// CONFIGURATION : END //////////////////
-	/////////////////////////////////////////////////////////
-	
+
+	// ///////////////////////////////////////////////////////
+	// //////////////// CONFIGURATION : END //////////////////
+	// ///////////////////////////////////////////////////////
+
 	/**
 	 * Username for the CMIS session.
 	 */
 	private String user;
-	
+
 	/**
 	 * Password for the CMIS session.
 	 */
 	private String password;
-	
+
 	/**
-	 * Cache for the session object, so that only one session is created by user request.
+	 * Cache for the session object, so that only one session is created by user
+	 * request.
 	 */
 	private Session session;
-	
+
 	/**
 	 * CMIS operation context, it contains a pagination setting.
 	 */
 	private OperationContext operationContext;
-	
+
 	/**
 	 * Constructor.
 	 */
@@ -97,14 +98,14 @@ public class OpenCMISRepositoryClientFacade implements RepositoryClientFacade {
 		operationContext = new OperationContextImpl();
 		operationContext.setMaxItemsPerPage(MAX_ITEMS_PER_PAGE);
 	}
-	
+
 	/**
 	 * Get a CMIS session.
 	 */
 	private Session getSession() throws ConnectionFailedException {
 		if (session != null)
 			return session;
-		
+
 		// Default factory implementation of client runtime.
 		SessionFactory sessionFactory = SessionFactoryImpl.newInstance();
 		Map<String, String> parameter = new HashMap<String, String>();
@@ -115,8 +116,9 @@ public class OpenCMISRepositoryClientFacade implements RepositoryClientFacade {
 
 		// Connection settings.
 		parameter.put(SessionParameter.ATOMPUB_URL, CMIS_ATOMPUB_URL);
-		parameter.put(SessionParameter.BINDING_TYPE, BindingType.ATOMPUB.value());
-		
+		parameter.put(SessionParameter.BINDING_TYPE, BindingType.ATOMPUB
+				.value());
+
 		// Session locale.
 		parameter.put(SessionParameter.LOCALE_ISO3166_COUNTRY, "");
 		parameter.put(SessionParameter.LOCALE_ISO639_LANGUAGE, "en");
@@ -126,36 +128,49 @@ public class OpenCMISRepositoryClientFacade implements RepositoryClientFacade {
 		// To avoid extra configuration: only one repository per CMIS server.
 		Session session = null;
 		try {
-			Repository soleRepository = sessionFactory.getRepositories(parameter).get(0);
+			Repository soleRepository = sessionFactory.getRepositories(
+					parameter).get(0);
 			session = soleRepository.createSession();
-		}
-		catch(CmisConnectionException e) { 
+		} catch (CmisConnectionException e) {
 			throw new ConnectionFailedException(e);
-		}
-		catch(CmisRuntimeException e) {
+		} catch (CmisRuntimeException e) {
 			throw new UnauthorizedException(e);
 		}
-		
+
 		session.setDefaultContext(operationContext);
 		return session;
 	}
-	
+
 	/**
-	 * List the content of a folder.
-	 * More specifically, get a page of items from the given folder, starting at the given offset.
+	 * List the content of a folder. More specifically, get a page of items from
+	 * the given folder, starting at the given offset.
 	 */
 	@Override
-	public NodesListPage getNodesListPage(String folderId, int skipCount) throws ConnectionFailedException {
+	public NodesListPage getNodesListPage(String folderId, int skipCount)
+			throws ConnectionFailedException {
 		CmisObject object = getSession().getObject(new ObjectIdImpl(folderId));
-		Folder folder = (Folder)object;
+		Folder folder = (Folder) object;
 		ItemIterable<CmisObject> children = folder.getChildren();
-		long totalNumberOfNodes = children.getTotalNumItems(); 
+		long totalNumberOfNodes = children.getTotalNumItems();
 		ItemIterable<CmisObject> page = children.skipTo(skipCount).getPage();
 		Iterator<CmisObject> iterator = page.iterator();
 		List<Node> list = new ArrayList<Node>((int) children.getTotalNumItems());
-		while(iterator.hasNext()) {
+		while (iterator.hasNext()) {
 			CmisObject child = iterator.next();
-			list.add(new Node(child.getId(), child.getName(), isSpace(child)));
+			Node n = new Node(child.getId(), child.getName(), isSpace(child));
+			n.setCreationDate(child.getCreationDate());
+			n.setLastModificationDate(child.getLastModificationDate());
+			n.setCreatedBy(child.getCreatedBy());
+			n.setLastModifiedBy(child.getLastModifiedBy());
+			if (!isSpace(child)) {
+				n
+						.setMimetype(((org.apache.chemistry.opencmis.client.api.Document) child)
+								.getContentStreamMimeType());
+				n
+						.setSize(((org.apache.chemistry.opencmis.client.api.Document) child)
+								.getContentStreamLength());
+			}
+			list.add(n);
 		}
 		return new NodesListPage(list, totalNumberOfNodes);
 	}
@@ -176,14 +191,11 @@ public class OpenCMISRepositoryClientFacade implements RepositoryClientFacade {
 	@Override
 	public Document getDocument(String fileId) throws ConnectionFailedException {
 		CmisObject object = getSession().getObject(new ObjectIdImpl(fileId));
-		org.apache.chemistry.opencmis.client.api.Document openCMISDocument =
-			(org.apache.chemistry.opencmis.client.api.Document)object;
-		Document document = new Document(
-				openCMISDocument.getContentStream().getStream(),
-				openCMISDocument.getContentStreamMimeType(),
-				openCMISDocument.getContentStreamLength(),
-				openCMISDocument.getName()
-		);
+		org.apache.chemistry.opencmis.client.api.Document openCMISDocument = (org.apache.chemistry.opencmis.client.api.Document) object;
+		Document document = new Document(openCMISDocument.getContentStream()
+				.getStream(), openCMISDocument.getContentStreamMimeType(),
+				openCMISDocument.getContentStreamLength(), openCMISDocument
+						.getName());
 		return document;
 	}
 
@@ -195,7 +207,7 @@ public class OpenCMISRepositoryClientFacade implements RepositoryClientFacade {
 		// TODO Implement this method.
 		return true;
 	}
-	
+
 	/**
 	 * Number of results displayed by page (pagination).
 	 */
@@ -203,11 +215,12 @@ public class OpenCMISRepositoryClientFacade implements RepositoryClientFacade {
 	public int getMaxItemsPerPage() {
 		return MAX_ITEMS_PER_PAGE;
 	}
-	
+
 	/**
 	 * Whether the given object is a space (folder) or not.
 	 */
 	private static boolean isSpace(CmisObject object) {
-		return object.getBaseTypeId().value().equals(ObjectType.FOLDER_BASETYPE_ID);
+		return object.getBaseTypeId().value().equals(
+				ObjectType.FOLDER_BASETYPE_ID);
 	}
 }
