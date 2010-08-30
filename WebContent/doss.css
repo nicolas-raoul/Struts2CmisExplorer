@@ -1,0 +1,48 @@
+@CHARSET "windows-31j";
+
+.style4 {color: #0000CC; }
+.style15 {font-size: 12px}
+.style36 {font-size: 12px; color: #FFFFFF; }
+a:link {
+	color: #3366CC;
+	text-decoration: none;
+}
+a:visited {
+	text-decoration: none;
+	color: #3366CC;
+}
+a:hover {
+	text-decoration: underline;
+	color: #3366CC;
+}
+a:active {
+	text-decoration: none;
+	color: #3366CC;
+}
+.style47 {font-size: 12px; font-weight: bold; }
+.style48 {color: #FFFFFF}
+.style50 {color: #FFFFFF; font-weight: bold; }
+
+.style47 {font-size: 12px; font-weight: bold; }
+.style49 {font-size: 1px}
+.style50 {font-size: 12px; color: #FFFFFF; font-weight: bold; }
+.style51 {color: #FFFFFF}
+
+.style63 {font-weight: bold; color: #FFFFFF; font-size: 12px; }
+.style64 {color: #FF0000}
+.style164 {
+	font-size: 10px;
+	color: #666666;
+}
+.style67 {color: #FF0000}
+.style68 {
+	color: #FF0000;
+	font-size: 12px;
+	font-weight: bold;
+}
+
+.style69 {color: #FF0000}
+.view_label{
+color: #FFFFFF;
+font-weight: bold;
+}
